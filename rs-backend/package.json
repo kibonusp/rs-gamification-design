@@ -1,0 +1,27 @@
+{
+  "name": "rs-backend",
+  "version": "1.0.0",
+  "description": "Recommendation System for Gamification Designs based on Hexad User Types",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js",
+    "start": "nodemon index.js"
+  },
+  "keywords": [
+    "recommendation",
+    "gamification",
+    "hexad"
+  ],
+  "author": "Gabriel Freitas",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.12"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.14"
+  }
+}
