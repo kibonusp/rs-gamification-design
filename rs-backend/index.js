@@ -13,7 +13,6 @@ const PORT = process.env.PORT || 4333;
 // Routes
 app.use(require('./routes/user'));
 app.use(require('./routes/question'));
-app.use(require('./routes/login'));
 
 mongoose.connect(process.env.CONNSTRING, {useNewUrlParser: true, useUnifiedTopology: true});
 
