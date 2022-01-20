@@ -20,7 +20,7 @@ D: Disruptor - 5
 Considering that the dominant is Philanthropist and that I wish to consider the users's sense of accomplishment,
 I'd take PAcc -> x such as the value is the maximum between the Acc.
 
-recommendationTable[PlayerType][Criteria][Storyboard]
+
 */
 
 module.exports.BTable = [[[-0.006, 0.164, 0.149, 0.166, 0.005], [-0.029, -0.013, 0.02, 0.119, -0.095]],

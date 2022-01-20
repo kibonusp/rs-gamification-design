@@ -8,7 +8,7 @@ require('dotenv').config();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-const PORT = process.env.PORT || 4333;
+const PORT = process.env.PORT || 5500;
 
 // Routes
 app.use(require('./routes/user'));

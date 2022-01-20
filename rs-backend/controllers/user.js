@@ -1,13 +1,39 @@
 const userModel = require('../models/user');
 const questionModel = require('../models/question');
-const bcrypt = require('bcrypt');
 const recommendationModel = require('../models/recommendation');
 
+const checkDemographicsType = (req, res) => {
+    if (isNaN(req.body.age))
+        return res.status(404).send({error: 'age is not number'});
+    if (typeof req.body.scholarity !== 'string')
+        return res.status(404).send({error: 'scholarity is not string'});
+    if (typeof req.body.gender !== 'string')
+        return res.status(404).send({error: 'gender is not string'});
+    if (typeof req.body.country !== 'string')
+        return res.status(404).send({error: 'country is not string'});
+}
+
 module.exports.createUser = async (req, res) => {
+    if(checkDemographicsType(req, res))
+        return checkDemographicsType(req)
+
+    const questions = await questionModel.find({});
+    let questionObject = {};
+    for (question of questions)
+        questionObject[question._id] = false;
+    
     const user = new userModel({
         userTypes: [0, 0, 0, 0, 0, 0],
-        choice: [0, 0],
-        recommendation: [0, 0]
+        // choice: [0, 0],
+        nQuestionsAnswered: 0,
+        questions: questionObject,
+        recommendation: [0, 0],
+        demographics: {
+            age: req.body.age,
+            scholarity: req.body.scholarity,
+            gender: req.body.gender,
+            country: req.body.country
+        }
     });
     const userCreated = await user.save();
     return res.status(200).json(userCreated);
@@ -17,38 +43,59 @@ module.exports.answerQuestion = async (req, res) => {
     try {
         const question = await questionModel.findById(req.params.question_id);
         if (!question)
-            return {status:'error',error:'question not found'};
+            return res.status(404).send({error: 'question not found'});
+        
         const user = await userModel.findById(req.params.user_id);
         if(!user)
-            return {status:'error',error:'user not found'};
-        let newUserTypes = user.userTypes;
-        newUserTypes[question.type] += req.body.likert;
+            return res.status(404).send({error: 'user not found'});
+        
+        // Check if question has already been answered
+        if (user.questions[question._id])
+            return res.status(409).send({error:'question has already been answered'})
+
+        // Update userType value summing up the likert scale for the question    
+        user.userTypes[question.type] += req.body.likert;
+        
+        // Update that the question was answered
+        user.questions[question._id] = true;
+        user.nQuestionsAnswered += 1;
+
+        // If all questions were answered, I get the dominant user types
+        if (user.nQuestionsAnswered == 24)
+            user.dominantTypes = maxIndexes(user.userTypes);
+
         const newUser = await userModel.findByIdAndUpdate(req.params.user_id, {
-            userTypes:  newUserTypes
-        }, {new: true})
+            userTypes:  user.userTypes,
+            dominantTypes: user.dominantTypes,
+            nQuestionsAnswered: user.nQuestionsAnswered,
+            questions: user.questions
+        }, {new: true});
+
         res.status(200).send(newUser);
     }
     catch (error) {
         console.log(JSON.stringify(error));
-        return {status:'error',error:'timed out'}
+        return res.status(504).send({'error': 'timed out'});
     }
 }
 
-
+/*
 // need to check if user exists
 module.exports.makeChoice = async (req, res) => {
     try {
         const user = await userModel.findByIdAndUpdate(req.params.user_id, {
             choice: [req.body.accomplishment, req.body.preference]
         }, {new: true});
-        res.status(200).send(user);
+        return res.status(200).send(user);
     }
     catch (error) {
         console.log(error);
-        return {status:'error',error:'timed out'}
+        return res.status(504).send({'error': 'timed out'});
     }
 }
+*/
 
+// function to get maximum value of array
 const max = arr => {
     return arr.reduce((a, b) =>
         Math.max(a,b)
@@ -88,12 +135,14 @@ module.exports.createRecommendation = async (req, res) => {
     try {
         const user = await userModel.findById(req.params.user_id);
         if (!user)
-            return {status:'error',error:'user not found'};
+            return res.status(404).send({error: 'user not found'});
+
+        if (user.nQuestionsAnswered != 24)
+            return res.status(428).send({error: 'not all questions were answered'});
+
         const accomplishment = []
         const preference = []
-        console.log(maxIndexes(user.userTypes));
-        for (userType of maxIndexes(user.userTypes)) {
-            console.log(recommendationModel.BTable[userType][0])
+        for (userType of user.dominantTypes) {
             let usertypeAcc = MaxIndexBPTable(recommendationModel.BTable[userType][0], recommendationModel.PTable[userType][0]);
             let userTypeP = MaxIndexBPTable(recommendationModel.BTable[userType][1], recommendationModel.PTable[userType][1]);
 
@@ -103,10 +152,10 @@ module.exports.createRecommendation = async (req, res) => {
         const newUser = await userModel.findByIdAndUpdate(req.params.user_id, {
             recommendation: [accomplishment, preference]
         }, {new: true})
-        res.status(200).send(newUser);
+        return res.status(200).send(newUser);
     }
     catch (error) {
         console.log(error);
-        return {status:'error',error:'timed out'}
+        return res.status(504).send({'error': 'timed out'});
     }
 }
