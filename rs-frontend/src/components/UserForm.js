@@ -32,7 +32,7 @@ export default function UserForm() {
     function alertOrNavigate() {
         if (!firstRender.current) {
             if (answered === 1)
-                navigate("/formdemo")
+                navigate("/formdemo", {state: true})
             else if (answered === 0)
                 alert("As questões não foram todas respondidas.")
         }

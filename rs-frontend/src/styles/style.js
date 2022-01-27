@@ -171,3 +171,44 @@ export const RadioContainer = styled.label`
         display: block;
     }
 `
+
+/* ----------------- UserFormDemo ----------------- */
+export const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+    color: #366696;
+    font-weight: 500;
+`
+
+export const Age = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 500;
+    margin-top: 1em;
+    input {
+        border: 1px solid #C6C6C6;
+        border-radius: 6px;
+        text-align: center;
+        width: 2em;
+        max-width: 2em;
+        height: 2em;
+        font-size: 2em;
+        padding: 0;
+        font-family: 'Poppins';
+        font-weight: 300;
+    }
+`
+
+export const MySelect = styled.div`
+width: 30%;
+    margin-top: 2em;
+    h3 {
+        font-weight: 500;
+        font-size: 1.25rem;
+        margin: 0;
+    }
+`
