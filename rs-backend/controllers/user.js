@@ -2,20 +2,15 @@ const userModel = require('../models/user');
 const questionModel = require('../models/question');
 const recommendationModel = require('../models/recommendation');
 
-const checkDemographicsType = (req, res) => {
-    if (isNaN(req.body.age))
-        return res.status(404).send({error: 'age is not number'});
-    if (typeof req.body.scholarity !== 'string')
-        return res.status(404).send({error: 'scholarity is not string'});
-    if (typeof req.body.gender !== 'string')
-        return res.status(404).send({error: 'gender is not string'});
-    if (typeof req.body.country !== 'string')
-        return res.status(404).send({error: 'country is not string'});
-}
-
 module.exports.createUser = async (req, res) => {
-    if(checkDemographicsType(req, res))
-        return checkDemographicsType(req)
+    if (typeof req.body.age !== 'number')
+        return res.status(400).send({error: 'age is not number'});
+    if (typeof req.body.scholarity !== 'string')
+        return res.status(400).send({error: 'scholarity is not string'});
+    if (typeof req.body.gender !== 'string')
+        return res.status(400).send({error: 'gender is not string'});
+    if (typeof req.body.country !== 'string')
+        return res.status(400).send({error: 'country is not string'});
 
     const questions = await questionModel.find({});
     let questionObject = {};

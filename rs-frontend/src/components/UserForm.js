@@ -3,23 +3,14 @@ import { FormHeader, Questions, StyledButton } from '../styles/style';
 import { Question } from './Question';
 import { useNavigate } from "react-router-dom";
 
-const axios = require('axios');
-
-export default function UserForm() {
+export default function UserForm(props) {
     const [questions, setQuestions] = useState([]);
     const [answered, setAnswered] = useState(2);    // 0 - false    1 - true    2 - undefined 
     const firstRender = useRef(1);
 
     useEffect(() => {
-        axios('http://localhost:5500/question').then(response => {
-            const questionsAPI = response.data;
-            questionsAPI.map(question => ({...question, likert: 0}));
-            questionsAPI.forEach(function (question) {
-                question.likert = 0;
-            });
-            setQuestions(questionsAPI);
-        });
-    }, [])
+        setQuestions(props.questions)
+    }, [props.questions])
     
 
     useEffect(() => {
@@ -31,10 +22,12 @@ export default function UserForm() {
 
     function alertOrNavigate() {
         if (!firstRender.current) {
-            if (answered === 1)
-                navigate("/formdemo", {state: true})
+            if (answered === 1 && questions.length !== 0)
+                navigate("/formdemo", {state: questions})
             else if (answered === 0)
                 alert("As questões não foram todas respondidas.")
+            else
+                alert("As questões ainda não foram renderizadas.")
         }
     }
 

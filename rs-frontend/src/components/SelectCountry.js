@@ -250,12 +250,12 @@ const countries = [
     { "value": "zimbabwe", "label": "Zimbabwe" }
 ]
 
-export default function SelectCountry() {
+export default function SelectCountry({setCountry}) {
 
     return (
         <MySelect>
             <h3>Country</h3>
-            <Select options={countries} />
+            <Select options={countries} onChange={setCountry}/>
         </MySelect>
     )
 }
