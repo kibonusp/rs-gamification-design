@@ -7,6 +7,7 @@ export default function UserForm(props) {
     const [questions, setQuestions] = useState([]);
     const [answered, setAnswered] = useState(2);    // 0 - false    1 - true    2 - undefined 
     const firstRender = useRef(1);
+    const navigate = useNavigate();
 
     useEffect(() => {
         setQuestions(props.questions)
@@ -45,8 +46,6 @@ export default function UserForm(props) {
         if (allAnswered)
             setAnswered(1)
     }
-
-    const navigate = useNavigate();
 
     return (
         <>

@@ -26,7 +26,7 @@ const scholarityOptions = [
     {value: "Complete Post Graduation", label: "Complete Post Graduation"}
 ]
 
-export default function UserFormDemo({questions}) {
+export default function UserFormDemo() {
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -34,14 +34,21 @@ export default function UserFormDemo({questions}) {
     const [country, setCountry] = useState()
     const [gender, setGender] = useState()
     const [scholarity, setScholarity] = useState()
+    const [user, setUser] = useState()
+    const questions = location.state;
 
     useEffect(() => {
-        if (!location.state) {
+        if (!questions) {
             console.log("entrei dentro do if do useEffect")
             alert("You must answer the user type questions before.")
             navigate("/")
         }
     }, [])
+
+    useEffect(() => {
+        if (user)
+            navigate("/recommendation", {state: user})
+    }, [user])
 
     const handleClick = e => {
         e.preventDefault()
@@ -56,8 +63,18 @@ export default function UserFormDemo({questions}) {
                 "gender": gender.value,
                 "country": country.value
             }).then(function (response) {
-                console.log(response)
-                console.log(response.data)
+                const userID = response.data._id;
+                axios.post(`http://localhost:5300/user/${userID}/question`, JSON.stringify({"questions": questions}), {
+                    headers: {
+                        // Overwrite Axios's automatically set Content-Type
+                        'Content-Type': 'application/json'
+                    }
+                }).then(() => {
+                    axios(`http://localhost:5300/user/${userID}/recommendation`).then(response => {
+                        console.log(response.data)
+                        setUser(response.data);
+                    });
+                })
             })
         }
     }
