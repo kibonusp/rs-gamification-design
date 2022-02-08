@@ -4,7 +4,8 @@ import styled from "styled-components";
 
 export const ScreenBlue = styled.div`
     background-color: #366696;
-    height: 100vh;
+    min-height: -webkit-fill-available;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -15,7 +16,7 @@ export const ScreenBlue = styled.div`
 export const Panel = styled.div`
     background-color: #F6F6F6;
     width: 90%;
-    height: 85%;
+    min-height: 85vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -210,5 +211,64 @@ width: 30%;
         font-weight: 500;
         font-size: 1.25rem;
         margin: 0;
+    }
+`
+
+/* ----------------- UserFormDemo ----------------- */
+
+export const Square = styled.div`
+    background-color: ${props => props.color};
+    width: 1.3em;
+    height: 1.3em;
+    margin-right: 10px;
+`
+
+export const HexLabels = styled.div`
+    color: #366696;
+    font-weight: 500;
+    font-size: 1.2rem;
+    .label {
+        display: flex;
+        margin: 0.8em 6em;
+    }
+`
+
+export const HexFraction = styled.div`
+    background-color: ${props => props.color};
+    height: 6em;
+    width: ${props => parseInt(Math.round(80*props.fract/props.total)) + "%"};
+    margin: 0em;
+`
+
+export const Results = styled.h1`
+    font-weight: 500;
+    color: #F6F6F6;
+    display: flex;
+    background-color: #366696;
+    height: 3em;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+` 
+
+export const ParamResult = styled.div`
+    color: #366696;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.4rem;
+    figure {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 50%;
+    }
+    figure img {
+        width: 100%;
+    }
+    figure figcaption {
+        align-self: start;
+        font-weight: 500;
+        font-size: 1.5rem;
     }
 `

@@ -39,7 +39,6 @@ export default function UserFormDemo() {
 
     useEffect(() => {
         if (!questions) {
-            console.log("entrei dentro do if do useEffect")
             alert("You must answer the user type questions before.")
             navigate("/")
         }
@@ -50,14 +49,14 @@ export default function UserFormDemo() {
             navigate("/recommendation", {state: user})
     }, [user])
 
-    const handleClick = e => {
+    const handleClick = async e => {
         e.preventDefault()
 
         if (age === undefined || country === undefined || gender === undefined || scholarity === undefined)
             alert("You must fill in all fields.")
         else {
             console.log(age, scholarity.value, gender.value, country.value)
-            axios.post("http://localhost:5300/user", {
+            await axios.post("http://localhost:5300/user", {
                 "age": parseInt(age),
                 "scholarity": scholarity.value,
                 "gender": gender.value,
@@ -66,7 +65,6 @@ export default function UserFormDemo() {
                 const userID = response.data._id;
                 axios.post(`http://localhost:5300/user/${userID}/question`, JSON.stringify({"questions": questions}), {
                     headers: {
-                        // Overwrite Axios's automatically set Content-Type
                         'Content-Type': 'application/json'
                     }
                 }).then(() => {
@@ -103,7 +101,7 @@ export default function UserFormDemo() {
                     <Select options={scholarityOptions} onChange={setScholarity}/>
                 </MySelect>
 
-                <StyledButton onClick={handleClick} style={{margin: "1em 0em"}}>Continue</StyledButton>
+                <StyledButton onClick={handleClick}>Continue</StyledButton>
             </Form>
         </>
     )
