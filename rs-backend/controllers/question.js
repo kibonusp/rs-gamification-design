@@ -1,5 +1,6 @@
 const questionModel = require('../models/question');
 
+// TODO: add CORS middleware
 module.exports.createQuestion = async (req, res) => {
     const question = new questionModel({
         description: req.body.description,
@@ -24,9 +25,4 @@ function shuffle (arr) {
 module.exports.getQuestions = async (req, res) => {
     const questions = await questionModel.find({});
     return res.status(200).send(shuffle(questions));
-}
-
-module.exports.getQuestionsByType = async (req, res) => {
-    const questions = await questionModel.find({type: req.params.type});
-    return res.status(200).json(questions);
 }

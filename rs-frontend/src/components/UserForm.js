@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { FormHeader, Questions, StyledButton } from '../styles/style';
+import { FormHeader, Questions, StyledButton, CentralizedColumn } from '../styles/style';
 import { Question } from './Question';
 import { useNavigate } from "react-router-dom";
 
@@ -47,7 +47,7 @@ export default function UserForm(props) {
     }
 
     return (
-        <>
+        <CentralizedColumn>
             <FormHeader>
                 <p>The following are some questions that are part of the
                     form to, at the end, predict your user type. </p>
@@ -58,6 +58,6 @@ export default function UserForm(props) {
                 }
                 <StyledButton onClick={handleClick}>Continue</StyledButton>
             </Questions>
-        </>
+        </CentralizedColumn>
     )
 }

@@ -14,16 +14,16 @@ module.exports.createUser = async (req, res) => {
 
     const questions = await questionModel.find({});
     let questionObject = {};
-    for (question of questions)
+    for (let question of questions)
         questionObject[question._id] = false;
     
     const user = new userModel({
         userTypes: [0, 0, 0, 0, 0, 0],
-        // choice: [0, 0],
         nQuestionsAnswered: 0,
         questions: questionObject,
         recommendation: [0, 0],
         demographics: {
+            // add req.body
             age: req.body.age,
             scholarity: req.body.scholarity,
             gender: req.body.gender,
@@ -74,21 +74,56 @@ module.exports.answerQuestion = async (req, res) => {
     }
 }
 
-/*
-// need to check if user exists
-module.exports.makeChoice = async (req, res) => {
+module.exports.answerQuestions = async (req, res) => {
     try {
-        const user = await userModel.findByIdAndUpdate(req.params.user_id, {
-            choice: [req.body.accomplishment, req.body.preference]
-        }, {new: true});
-        return res.status(200).send(user);
+        const user = await userModel.findById(req.params.user_id);
+        if(!user)
+            return res.status(404).send({error: 'user not found'});
+
+        const questions = req.body.questions;
+
+        if (questions.length > 24)
+            return res.status(400).send({error: 'there cannot be more than 24 valid questions'})
+
+        let isInModel = true;
+        let i = 0;
+        while (isInModel && i < questions.length) {
+            if (!questionModel.exists({_id: questions[i]._id}))
+                isInModel = false;
+            i += 1
+        }
+
+        if (!isInModel)
+            return res.status(404).send({error: 'one or more of the questions were not found'})
+        
+        let newUser;
+        for (let questionReq of questions) {
+            if (user.questions[questionReq._id])
+                return res.status(409).send({error:'question has already been answered'})
+
+            user.userTypes[questionReq.type] += questionReq.likert;
+            
+            user.questions[questionReq._id] = true;
+            user.nQuestionsAnswered += 1;
+
+            if (user.nQuestionsAnswered == 24)
+                user.dominantTypes = maxIndexes(user.userTypes);
+
+            // Adicionar no final para fazer uma requisição só
+            newUser = await userModel.findByIdAndUpdate(req.params.user_id, {
+                userTypes:  user.userTypes,
+                dominantTypes: user.dominantTypes,
+                nQuestionsAnswered: user.nQuestionsAnswered,
+                questions: user.questions
+            }, {new: true});
+        }
+        res.status(200).send(newUser);
     }
     catch (error) {
-        console.log(error);
+        console.log(JSON.stringify(error));
         return res.status(504).send({'error': 'timed out'});
     }
 }
-*/
 
 // function to get maximum value of array
 const max = arr => {
@@ -110,8 +145,6 @@ const maxIndexes = arr => {
 const MaxIndexBPTable = (b_arr, p_arr) => {
     // I get the indexes which the value of B is maximum
     let indexes = maxIndexes(b_arr);
-
-    console.log(indexes);
 
     // If I have multiple indexes I get the one who has minimum p-value
     let min = p_arr[indexes[0]];

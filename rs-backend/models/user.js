@@ -4,9 +4,6 @@ const userSchema = mongoose.Schema({
     // Value for each hexad user type
     userTypes: Array,
 
-    // User's choice for recommendation design given sense of accomplishment and preference
-    choice: Array,
-
     // User's dominant types
     dominantTypes: Array,
 

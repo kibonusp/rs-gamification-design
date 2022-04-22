@@ -10,7 +10,7 @@ const genderOptions = [
     {value: "male", label: "Male"},
     {value: "female", label: "Female"},
     {value: "non-binary", label: "Non-binary"},
-    {value: "other", label: "Other"}
+    {value: "not-answer", label: "Prefer Not to Answer"}
 ]
 
 const scholarityOptions = [
@@ -78,7 +78,7 @@ export default function UserFormDemo() {
     }
 
     return (
-        <>
+        <div>
             <FormHeader>
                 <p>The following are some questions that are part of the
                     form to, at the end, predict your user type. </p>
@@ -101,8 +101,8 @@ export default function UserFormDemo() {
                     <Select options={scholarityOptions} onChange={setScholarity}/>
                 </MySelect>
 
-                <StyledButton onClick={handleClick}>Continue</StyledButton>
+                <StyledButton style={{margin: '1em 0em'}}onClick={handleClick}>Continue</StyledButton>
             </Form>
-        </>
+        </div>
     )
 }

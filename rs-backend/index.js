@@ -1,3 +1,5 @@
+// TODO: Remover os controllers e routes que promovem que alguém altere o banco de dado das questões ou limitá-lo com o CORS
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
